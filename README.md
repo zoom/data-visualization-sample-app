@@ -1,15 +1,20 @@
-# Zoom - B.Dean - FTDX
+# Zoom - Data Visualization Sample App
 
-First Time Developer Experience app written by Benjamin Dean.
-
-The goal of this app is to act as a "Hello World" for developers showing:
+This is a sample application demonstrating the basics of developing an app for the Zoom Marketplace showing:
 
 * OAuth2 Authorization Flow
-* Simple API data visualization
+* OAuth2 Refresh Flow
+* Webhook Event Handling
+* Zoom API Data retrieval into persistent storage
+* Simple Zoom API data visualizations of your Zoom Account Activity
 
 ## Prerequisites
 
+TBD...
+
 ## How to Use This App
+
+TBD...
 
 ### Locally with ngrok
 
@@ -38,6 +43,27 @@ tunnels:
 
 ### On Heroku
 
+TBD...
+
+## Heroku Add-Ons
+
+* Heroku-Config
+
 ## Contributing
 
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the Zoom Developer Code of Conduct, the different ways you can contribute, and the process for submitting pull requests to us.
+
 ## License
+
+Please see the [LICENSE](LICENSE) file for complete license details.
+
+## Built Using
+
+* Node.js
+* Github
+* Docker
+* NPM
+* NVM
+* dotenv
+* Express.js
+* MongoDB
