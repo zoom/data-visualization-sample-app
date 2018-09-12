@@ -1,10 +1,25 @@
 {
-  "name": "ftdx",
+  "name": "data-visualization-sample-app",
   "version": "0.1.0",
+  "description": "Sample application to visualize activity on your Zoom account, written using Node.js, Express.js, MongoDB, and the Zoom APIs to assist new Zoom Developers",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
+  "keywords": ["zoom", "zoom video communications", "sample app", "data visualization"],
+  "license": "MIT",
+  "author": {
+    "name": "Zoom Video Communications - Developer Platform",
+    "url": "https://developer.zoom.us"
+  },
+  "contributors": [
+    "Benjamin Dean <ben.dean@zoom.us> (https://github.com/bdeanindy)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zoom/data-visualization-sample-app"
+  },
+  "bugs": "https://github.com/zoom/data-visualization-sample-app/issues",
   "dependencies": {
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
