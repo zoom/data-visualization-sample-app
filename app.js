@@ -1,14 +1,25 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+"use strict";
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var zoomRouter = require('./routes/zoom');
+// Setup local development environment variables
+if('production' !== process.env.NODE_ENV) {
+    require('dotenv').config();
+}
 
-var app = express();
+// Express.js Deps
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+
+// Routes and Middleware
+const indexRouter = require('./routes/index');
+const oauthRouter = require('./routes/oauth');
+const usersRouter = require('./routes/users');
+const zoomRouter = require('./routes/zoom');
+const ZoomMiddleware = require('./middleware/zoom');
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,8 +32,26 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/zoom', zoomRouter);
+
+/**
+ * Set and create a new instance of ZoomMiddleware.
+ * The `client_id` and `secret_key` can be set either here
+ * or in your environment variables (e.g. for Heroku)
+ *
+ * NOTE: If you have ZOOM_CLIENT_ID and ZOOM_SECRET_KEY
+ * set in your environment, you can create the new ZoomMiddleware
+ * instance with `const zMiddleware = new ZoomMiddleware()`
+ *
+ * @type {ZoomMiddleware|exports|module.exports}
+ */
+const zMiddleware = new ZoomMiddleware({
+    'client_id': process.env.ZOOM_CLIENT_ID,
+    'secret_key': process.env.ZOOM_CLIENT_SECRET
+});
+
+app.use('/oauth', zMiddleware, oauthRouter);
+app.use('/users', zMiddleware, usersRouter);
+app.use('/zoom', zMiddleware, zoomRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

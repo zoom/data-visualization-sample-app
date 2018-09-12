@@ -8,12 +8,15 @@
   "dependencies": {
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "dotenv": "^6.0.0",
     "express": "~4.16.0",
     "hbs": "~4.0.1",
     "http-errors": "~1.6.2",
     "mongodb": "^3.1.4",
     "mongoose": "^5.2.14",
-    "morgan": "~1.9.0"
+    "morgan": "~1.9.0",
+    "querystring": "^0.2.0",
+    "request": "^2.88.0"
   },
   "engines": {
     "node": "10.9.x"

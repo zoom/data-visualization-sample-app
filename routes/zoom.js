@@ -19,7 +19,9 @@ router.get('/auth/redirect', function(req, res, next) {
         console.error(errMsg);
         res.send(400, errMsg);
     }
-    // TODO Handle authorization request and exchange for valid access_token
+    // Handle authorization request and exchange for valid access_token
+    let state = (req.query.state) ? `state=${req.query.state}` : ``;
+    res.redirect(`/oauth/phase-two?code=${authorizationCode}&redirect_uri=${req.query.redirect_uri}${state}`);
 });
 
 /* GET Zoom Integration Support Page. */
