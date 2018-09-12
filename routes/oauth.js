@@ -1,12 +1,30 @@
 "use strict";
 
-const router = require('express').Router();
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
-const request = require('request');
-const querystring = require('querystring');
+/**
+ * Zoom OAuth2 Router.
+ *
+ * An Express.js Router module used to obtain, refresh, and revoke tokens for the Zoom API
+ *
+ * @link https://devdocs.zoom.us/docs/authorization/oauth-with-zoom
+ * @file http://expressjs.com/en/4x/api.html#router
+ * @author Benjamin Dean <ben.dean@zoom.us>
+ * @since 0.1.0
+ * @requires router
+ * @requires request
+ * @requires querystring
+ */
 
+const router        = require('express').Router();
+const request       = require('request');
+const querystring   = require('querystring');
+
+/**
+ * getZoomAuthBase.
+ *
+ * @private
+ *
+ * @return {string} Appropriate URL for either Development or Production Auth Endpoint
+ */
 const getZoomAuthBase = () => {
     let zoomAuthBaseURL = ('production' === process.env.NODE_ENV)
         ? process.env.ZOOM_AUTH_BASE_URL
@@ -16,7 +34,85 @@ const getZoomAuthBase = () => {
 };
 
 /**
- * Initial OAuth endpoint as specified in Zoom Marketplace -> Manage -> {{App}}
+ * refreshToken.
+ *
+ * OAuth2 Refresh Flow Handler
+ *
+ * @private
+ *
+ * @param       {string} refresh_token    Active refresh_token
+ * @param       {string} client_id        Client ID for the respective app
+ * @param       {string} client_secret    Client Secret for the respective app
+ * @param       {string} redirect_uri     The redirect URI for the app
+ * @callback    {function} cb          Uses CJS format args: err, body (err === null, is a successful callback), body is described in "@return" below
+ * @return      {object} Zoom API Tokens The access_token used to make ZOOM API requests, and the refresh_token to obtain new access_tokens
+ * @todo        Improve to use Promises instead of callback
+ * @todo        Remove console.logs before publishing
+ * @todo        Refactor to use DB and store/cache tokens for use/reference/update accordingly
+ * @todo        Build a static utility method/module and implement `checkExpiration()` which should be called prior to executing any API request (and to queue that request if the token is actively being refreshed or is within the expiration-refresh-threshold)
+ * @todo        Create a Worker Process to handle calling refreshToken(...) when needed (show developers best practices for refresh token strategies)
+ * @todo        Handle errors accordingly and notify users when there are errors which will impact their experience or their data (give them action items and contact info if they have questions)
+ * @todo        DRY this out (phase-two and refreshToken have nearly identical implementations)
+ */
+const refreshToken = (refresh_token, client_id = process.env.ZOOM_CLIENT_ID, client_secret = process.env.ZOOM_CLIENT_SECRET, redirect_uri, cb) => {
+    const zoomAuthBaseURL = getZoomAuthBase();
+    const zoomTokenEndpoint = `${zoomAuthBaseURL}/oauth/token`; // Note: Refresh uses the same route as the 2nd phase of Authorization Flow to obtain an access_token
+
+    let accessToken;
+    let basicAuthKeys = clientId + ':' + clientSecret;
+    let authBuf = Buffer.from(basicAuthKeys, 'ascii');
+    let basicAuthHeaderString = `Basic ${authBuf.toString('base64')}`;
+    // Only for instructional purposes, do not use the following in production, refresh tokens should be retrieved for a specific user/account from DB.installations
+    let activeRefreshToken = req.app.refresh_token; // We cached this in phase-two of the Authorization Flow for demonstration purposes
+    //console.log('Basic Auth Header String: ', basicAuthHeaderString);
+    let requestOpts = {
+        method: 'POST',
+        url: `${zoomTokenEndpoint}`,
+        headers: {
+            Authorization: basicAuthHeaderString,
+            Accept: `application/json`
+        },
+        qs: {
+            grant_type: `refresh_token`,
+            refresh_token: `${activeRefreshToken}`,
+            redirect_uri: `https://${req.headers.host}/oauth/phase-two`
+        },
+        useQuerystring: true,
+        json: true
+    };
+
+    // we have our authorization code, now make a request to exchange it for a valid access_token.
+    console.log(`Requesting a refreshed access_token`);
+    request(requestOpts, function(error, response, body) {
+        if (error) {
+            console.error(`\nRefresh Flow failure: ${error}`);
+            //return res.status(500).send(error);
+            cb(error, body); // TODO Improve this and handle these errors accordingly (retry the refresh, notify user, etc...)
+        } else {
+            // we should have an access and refresh token. store them securely
+            console.log('Refresh Token Response Body: ', body);
+
+            // TODO DELETE THIS ONCE DEVELOPMENT IS COMPLETE
+            console.log(`\nAccess token: ${body.access_token}`);
+            console.log(`\nAccess token type: ${body.token_type}`);
+            console.log(`\nRefresh token: ${body.refresh_token}`);
+            console.log(`\nAccess token expires_in: ${body.expires_in}`);
+            console.log(`\nAccess token scope: ${body.scope}`);
+
+            // TODO Refactor, just a placeholder for now...needs to store data in DB
+            console.log(`access_token has been refreshed, ready to access the API!!!`);
+            cb(null, body); // Update auth data for this installation (user/account) accordingly in DB.authHistory
+        }
+    });
+};
+
+/**
+ * Initial OAuth2 Authorization Flow endpoint handler
+ *
+ * @public
+ *
+ * @param req {Express Request Object}
+ * @param res {Express Response Object}
  */
 router.get('/phase-one', function(req, res) {
     console.log(`\nPhase one of redirect has been initiated\n`);
@@ -38,7 +134,7 @@ router.get('/phase-one', function(req, res) {
     let paramsString = querystring.stringify(callbackParams);
     let redirectUrl = `${zoomAuthorizeURL}?${paramsString}`;
 
-    /*
+    /* Not used in Zoom API V2, but common in some API Auth flows, here in case this is implemented in the future
     if(req.query.version) {
         redirectUrl += `&version=${req.query.version}`;
     }
@@ -48,7 +144,12 @@ router.get('/phase-one', function(req, res) {
 });
 
 /**
- * Secondary OAuth endpoint as specified by `phaseTwoLink` in the phase one endpoint
+ * Secondary OAuth2 Authorization Flow endpoint handler
+ *
+ * @public
+ *
+ * @param req {Express Request Object}
+ * @param res {Express Response Object}
  */
 router.get('/phase-two', function(req, res, next) {
     console.log(`\nPhase two of redirect has been initiated\n`);
@@ -75,7 +176,7 @@ router.get('/phase-two', function(req, res, next) {
     let basicAuthKeys = clientId + ':' + clientSecret;
     let authBuf = Buffer.from(basicAuthKeys, 'ascii');
     let basicAuthHeaderString = `Basic ${authBuf.toString('base64')}`;
-    console.log('Basic Auth Header String: ', basicAuthHeaderString);
+    //console.log('Basic Auth Header String: ', basicAuthHeaderString);
     let requestOpts = {
         method: 'POST',
         url: `${zoomTokenEndpoint}`,
@@ -103,7 +204,7 @@ router.get('/phase-two', function(req, res, next) {
             // we should have an access and refresh token. store them securely
             console.log('Token Response Body: ', body);
 
-            // TODO This is only temporary and SHOULD NOT be used in a production environment, these should be stored in the DB.installations
+            // TODO This is only for demonstration purposes and SHOULD NOT be used in a production environment, these should be stored in the DB.installations
             req.app.token = body.access_token;
             req.app.tokenType = body.token_type;
             req.app.refresh = body.refresh_token;
