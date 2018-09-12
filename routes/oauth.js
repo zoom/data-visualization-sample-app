@@ -107,6 +107,54 @@ const refreshToken = (refresh_token, client_id = process.env.ZOOM_CLIENT_ID, cli
 };
 
 /**
+ * revokeToken.
+ *
+ * OAuth2 Revoke Token Handler
+ *
+ * @private
+ *
+ * @param       {string} token      The token to revoke
+ * @callback    {function} cb       Uses CJS format args: err, body (err === null, is a successful callback), body is described in "@return" below
+ * @return      {object} Zoom API Tokens The access_token used to make ZOOM API requests, and the refresh_token to obtain new access_tokens
+ * @todo        Improve to use Promises instead of callback
+ * @todo        Remove console.logs before publishing
+ * @todo        Refactor to use DB and update accordingly
+ * @todo        Handle errors accordingly and notify users when there are errors which will impact their experience or their data (give them action items and contact info if they have questions)
+ */
+const revokeToken = (token, cb) => {
+    // Sanity check
+    if(!token) {
+        console.error('Missing required parameter `token`');
+        throw new Error('Missing required parameter `token`');
+    }
+
+    let revokeTokenURI = `${getZoomAuthBase()}/oauth/revoke`; 
+    let revokeTokenPayload = `token=${token}`;
+    let requestOpts = {
+        uri: revokeTokenURI,
+        method: 'POST',
+        headers: {
+            "Content-Type": 'application/x-www-form-urlencoded',
+            Accept: 'application/json'
+        },
+        body: revokeTokenPayload,
+        auth: {
+            user: process.env.ZOOM_CLIENT_ID,
+            pass: process.env.ZOOM_CLIENT_SECRET 
+        }
+    };
+    request(requestOpts, function(error, response, body) {
+        if(!error && 200 === response.statusCode) {
+            console.log('Revoke Token Response Body: ', body);
+            return cb(null, body);
+        } else {
+            console.log(error);
+            return cb(error, body);
+        }
+    });
+};
+
+/**
  * Initial OAuth2 Authorization Flow endpoint handler
  *
  * @public
