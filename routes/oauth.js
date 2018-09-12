@@ -92,9 +92,6 @@ router.get('/phase-two', function(req, res, next) {
         json: true
     };
 
-    // TODO Remove before publishing
-    console.log('Request Options: ', requestOpts);
-
     // we have our authorization code, now make a request to exchange it for a valid access_token.
     // TODO Improve this to use promises
     console.log(`Requesting the access_token`);
@@ -106,6 +103,7 @@ router.get('/phase-two', function(req, res, next) {
             // we should have an access and refresh token. store them securely
             console.log('Token Response Body: ', body);
 
+            // TODO This is only temporary and SHOULD NOT be used in a production environment, these should be stored in the DB.installations
             req.app.token = body.access_token;
             req.app.tokenType = body.token_type;
             req.app.refresh = body.refresh_token;
