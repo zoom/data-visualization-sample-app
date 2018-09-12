@@ -8,6 +8,19 @@ This is a sample application demonstrating the basics of developing an app for t
 * Zoom API Data retrieval into persistent storage
 * Simple Zoom API data visualizations of your Zoom Account Activity
 
+## Scenario / User Story
+
+As a developer, I have been tasked by my manager to build an integration with Zoom. I am to build a simple app that pulls data from my company’s Zoom account into persistent storage, and which presents data visualizations (using Grafana or d3.js) about our Zoom account:
+
+* # of Users
+* # of Meetings
+* # of Webinars
+* # of Zoom Rooms
+* User Activity Information
+* Meeting Activity Information
+* Webinar Activity Information
+* Zoom Room Activity Information
+
 ## Prerequisites
 
 TBD...
