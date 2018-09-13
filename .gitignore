@@ -63,3 +63,6 @@ typings/
 # Ignore *nix swap
 *.swp
 *.swo
+
+# Ignore ngrok start commands script
+startngrok.sh
