@@ -80,3 +80,6 @@ Please see the [LICENSE](LICENSE) file for complete license details.
 * dotenv
 * Express.js
 * MongoDB
+
+## Support
+For any questions or issues, please visit our new Community Support Forum at https://devforum.zoom.us/
