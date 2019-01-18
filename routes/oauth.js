@@ -269,7 +269,13 @@ router.get('/phase-two', function(req, res, next) {
             console.log(`Now we are ready to access the API!!!`);
             // TODO Need to complete this or refactor it, just a placeholder for now...
             res.render('configure', {
-                appDisplayName: process.env.APP_DISPLAY_NAME
+                appDisplayName: process.env.APP_DISPLAY_NAME,
+                configurationOptionsByScope: [
+                    {dataId: `newUsers`, displayName: `New Users`},
+                    {dataId: `meetings`, displayName: `Meetings`},
+                    {dataId: `participants`, displayName: `Participants`},
+                    {dataId: `meetingMinutes`, displayName: `Meeting Minutes`}
+                ]
             });
         }
     });
