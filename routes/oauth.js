@@ -28,7 +28,8 @@ const querystring   = require('querystring');
 const getZoomAuthBase = () => {
     let zoomAuthBaseURL = ('production' === process.env.NODE_ENV)
         ? process.env.ZOOM_AUTH_BASE_URL
-        : process.env.ZOOM_DEV_AUTH_BASE_URL
+        : process.env.ZOOM_AUTH_BASE_URL
+        //: process.env.ZOOM_DEV_AUTH_BASE_URL
         ;
     return zoomAuthBaseURL;
 };
@@ -167,9 +168,9 @@ router.get('/phase-one', function(req, res) {
 
     const zoomAuthBaseURL = getZoomAuthBase();
     const zoomAuthorizeURL = `${zoomAuthBaseURL}/oauth/authorize`;
-    const clientId = req.app.clientId;
-    const clientSecret = req.app.clientSecret;
     const oauthState = process.env.AUTH_STATE;
+    let clientId = req.app.clientId;
+    let clientSecret = req.app.clientSecret;
 
     // if we've reached this point, that means we're set. make a request to start the authorization process
     let phaseTwoLink = `https://${req.headers.host}/oauth/phase-two`;
@@ -187,6 +188,7 @@ router.get('/phase-one', function(req, res) {
         redirectUrl += `&version=${req.query.version}`;
     }
     */
+    console.log('Redirecting to...: ', redirectUrl);
 
     res.redirect(redirectUrl);
 });

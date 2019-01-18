@@ -45,8 +45,10 @@ app.use('/', indexRouter);
  * @type {ZoomMiddleware|exports|module.exports}
  */
 const zMiddleware = new ZoomMiddleware({
+    /* You can explicitly define these values
     'client_id': process.env.ZOOM_CLIENT_ID,
     'secret_key': process.env.ZOOM_CLIENT_SECRET
+    */
 });
 
 app.use('/oauth', zMiddleware, oauthRouter);

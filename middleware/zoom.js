@@ -11,8 +11,17 @@ const express = require('express');
  * @constructor
  */
 let ZoomMiddleware = function(options) {
-    let clientId = options.client_id || process.env.ZOOM_CLIENT_ID;
-    let secretKey = options.secret_key || process.env.ZOOM_CLIENT_SECRET;
+    let tmpClientID = ('development' === process.env.APP_MODE)
+        ? process.env.ZOOM_DEV_CLIENT_ID
+        : process.env.ZOOM_CLIENT_ID
+        ;
+    let tmpClientSecret = ('development' === process.env.APP_MODE)
+        ? process.env.ZOOM_DEV_CLIENT_SECRET
+        : process.env.ZOOM_CLIENT_SECRET
+        ;
+
+    let clientId = options.client_id || tmpClientID;
+    let secretKey = options.secret_key || tmpClientSecret;
 
     return function(req, res, next) {
         console.log('inside the Zoom Middelware');
