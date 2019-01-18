@@ -5,6 +5,19 @@ if('production' !== process.env.NODE_ENV) {
     require('dotenv').config();
 }
 
+// DEPS
+const mongoose = require('mongoose');
+let mongoURL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URL;
+let mongoDB = process.env.DB_NAME;
+let dbConn = `${mongoURL}/${mongoDB}`;
+mongoose.connect(dbConn, { useNewUrlParser: true }, (err, res) => {
+    if(err) {
+        console.error(`Error connecting to: ${dbConn}. ${err}`);
+    } else {
+        console.log(`Connected to: ${dbConn}`);
+    }
+});
+
 // Express.js Deps
 const createError = require('http-errors');
 const express = require('express');

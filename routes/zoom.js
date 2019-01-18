@@ -1,29 +1,9 @@
-let express = require('express');
-let router = express.Router();
-//let webhooks = require('../webhooks');
+const express = require('express');
+const router = express.Router();
+//const webhooks = require('../webhooks');
+const dailyReportController = require('../controllers/dailyReport.controller');
 
-/* GET App Main Page. */
-router.get('/', function(req, res, next) {
-    // TODO Verify JWT data, user, and account
-    // TODO Fetch operational data from the DB
-    // NOTE This is NOT real time (would need refactored for streaming data)
-    let operationalData = {}; // Will be equal to ^^^ once setup
-    res.render('dashboard', operationalData);
-});
-
-/* GET OAuth */
-router.get('/auth/redirect', function(req, res, next) {
-    let authorizationCode = req.query.code;
-    if(!authorizationCode || '' === authorizationCode) {
-        let errMsg = 'Authorization code query param is required';
-        console.error(errMsg);
-        res.send(400, errMsg);
-    }
-    // Handle authorization request and exchange for valid access_token
-    let state = (req.query.state) ? `state=${req.query.state}` : ``;
-    res.redirect(`/oauth/phase-two?code=${authorizationCode}&redirect_uri=${req.query.redirect_uri}${state}`);
-});
-
+// ##################### STATIC PAGES #############################
 /* GET Zoom Integration Support Page. */
 router.get('/support', function(req, res, next) {
     res.render('support', {
@@ -37,16 +17,39 @@ router.get('/privacy', function(req, res, next) {
     res.redirect(process.env.PRIVACY_URL);
 });
 
-/* GET App Configuration Page. */
-router.get('/configure', function(req, res, next) {
+// ##################### DYNAMIC PAGES ###########################
+/* GET App Main Page. */
+router.get('/', function(req, res, next) {
     // TODO Verify JWT data, user, and account
-    // TODO Fetch configuration state information from the DB
-    let currentConfiguration = {}; // Will be equal to ^^^ once setup
-    res.render('configure', currentConfigurationData);
+    // TODO Fetch operational data from the DB
+    // NOTE This is NOT real time (would need refactored for streaming data)
+    let operationalData = {}; // Will be equal to ^^^ once setup
+    res.render('dashboard', operationalData);
 });
 
+/* GET App Configuration Page. */
+router.get('/configure', function(req, res, next) {
+    // TODO Require JWT or fail
+    // TODO Verify JWT data, user, and account
+    // TODO Fetch configuration state information from the DB
+    //let currentConfiguration = {}; // Will be equal to ^^^ once setup
+    let configurationOptionsByScope = [
+        {dataId: `newUsers`, displayName: `New Users`},
+        {dataId: `meetings`, displayName: `Meetings`},
+        {dataId: `participants`, displayName: `Participants`},
+        {dataId: `meetingMinutes`, displayName: `Meeting Minutes`}
+    ]
+    res.render('configure', {configurationOptionsByScope});
+});
+
+// #################### CONTROLLER MAPPING #####################
+router.get('/report/daily/test', dailyReportController.test);
+
+// #################### SYSTEM #################################
 /* POST Zoom Webhook Event Handler */
 router.post('/webhooks/:evt', function(req, res, next) {
+    // TODO Use this with a Controller to handle all incoming requests???
+    // TODO Only accept POST requests to these URLs???
     // TODO Verify the request source is Zoom using the Verification Token
     if('deauthorization' === req.param.evt) {
         console.log('Deauthorization event received...');
