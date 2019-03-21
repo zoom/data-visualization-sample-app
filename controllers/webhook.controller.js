@@ -14,7 +14,7 @@ exports.generic = (req, res) => {
             res.status(500).end(err);
         }
         console.log(`New generic webhook saved to DB!`);
-        res.status(200);
+        res.status(200).end();
     });
 };
 exports.deauthorization = (req, res) => {
@@ -33,6 +33,6 @@ exports.deauthorization = (req, res) => {
         console.log(`Deauthorization webhook saved to DB!`);
         console.log('Signature: ', req.body.payload.signature);
         // TODO Call Data Compliance API
-        res.status(200);
+        res.status(200).end();
     });
 };
