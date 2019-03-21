@@ -20,6 +20,8 @@ let ZoomMiddleware = function(options) {
         : process.env.ZOOM_CLIENT_SECRET
         ;
 
+    let signature = "Basic " + new Buffer(tmpClientID + ':' + tmpClientSecret).toString('base64');
+
     let clientId = options.client_id || tmpClientID;
     let secretKey = options.secret_key || tmpClientSecret;
 
@@ -35,6 +37,7 @@ let ZoomMiddleware = function(options) {
 
         req.app.clientId = clientId;
         req.app.clientSecret = secretKey;
+        req.app.signature = signature;
 
         next();
     };

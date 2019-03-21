@@ -9,14 +9,18 @@
  * @file http://expressjs.com/en/4x/api.html#router
  * @author Benjamin Dean <ben.dean@zoom.us>
  * @since 0.1.0
+ * @requires moment
  * @requires router
  * @requires request
  * @requires querystring
+ * @requires ../models/auth.model
  */
 
+const moment        = require('moment');
 const router        = require('express').Router();
 const request       = require('request');
 const querystring   = require('querystring');
+const Auth          = require('../models/auth.model');
 
 /**
  * getZoomAuthBase.
@@ -55,7 +59,7 @@ const getZoomAuthBase = () => {
  * @todo        Handle errors accordingly and notify users when there are errors which will impact their experience or their data (give them action items and contact info if they have questions)
  * @todo        DRY this out (phase-two and refreshToken have nearly identical implementations)
  */
-const refreshToken = (refresh_token, client_id = process.env.ZOOM_CLIENT_ID, client_secret = process.env.ZOOM_CLIENT_SECRET, redirect_uri, cb) => {
+const refreshToken = (refresh_token, redirect_uri, client_id = process.env.ZOOM_CLIENT_ID, client_secret = process.env.ZOOM_CLIENT_SECRET, cb) => {
     const zoomAuthBaseURL = getZoomAuthBase();
     const zoomTokenEndpoint = `${zoomAuthBaseURL}/oauth/token`; // Note: Refresh uses the same route as the 2nd phase of Authorization Flow to obtain an access_token
 
@@ -254,12 +258,34 @@ router.get('/phase-two', function(req, res, next) {
             // we should have an access and refresh token. store them securely
             console.log('Token Response Body: ', body);
 
-            // TODO This is only for demonstration purposes and SHOULD NOT be used in a production environment, these should be stored in the DB.installations
+            /* TODO This is only for demonstration purposes and SHOULD NOT be used in a production environment, these should be stored in the DB.installations
             req.app.token = body.access_token;
             req.app.tokenType = body.token_type;
             req.app.refresh = body.refresh_token;
             req.app.expiresIn = body.expires_in;
             req.app.tokenScope = body.scope;
+            */
+
+            body.refresh_after = moment().add(59, 'minutes');
+            console.log('refresh after: ', body.refresh_after);
+
+            // TODO: Store in DB (only should hit this if we're installing the app)
+            let auth = new Auth(body);
+            auth.save((err) => {
+                if(err) throw err;
+                console.log(`New auth saved to DB!`);
+                // Usually, you would be creating an account here or authenticating this user exists in your system.
+                // Since this app is meant to run 1:1, then it isn't a big deal
+                res.render('configure', {
+                    appDisplayName: process.env.APP_DISPLAY_NAME,
+                    configurationOptionsByScope: [
+                        {dataId: `newUsers`, displayName: `New Users`},
+                        {dataId: `meetings`, displayName: `Meetings`},
+                        {dataId: `participants`, displayName: `Participants`},
+                        {dataId: `meetingMinutes`, displayName: `Meeting Minutes`}
+                    ]
+                });
+            });
 
             // TODO DELETE THIS ONCE DEVELOPMENT IS COMPLETE
             console.log(`\nAccess token: ${body.access_token}`);
@@ -270,15 +296,6 @@ router.get('/phase-two', function(req, res, next) {
 
             console.log(`Now we are ready to access the API!!!`);
             // TODO Need to complete this or refactor it, just a placeholder for now...
-            res.render('configure', {
-                appDisplayName: process.env.APP_DISPLAY_NAME,
-                configurationOptionsByScope: [
-                    {dataId: `newUsers`, displayName: `New Users`},
-                    {dataId: `meetings`, displayName: `Meetings`},
-                    {dataId: `participants`, displayName: `Participants`},
-                    {dataId: `meetingMinutes`, displayName: `Meeting Minutes`}
-                ]
-            });
         }
     });
 });

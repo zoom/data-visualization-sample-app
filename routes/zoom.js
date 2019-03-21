@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-//const webhooks = require('../webhooks');
+const webhookController = require('../controllers/webhook.controller');
 const dailyReportController = require('../controllers/dailyReport.controller');
 
 // ##################### STATIC PAGES #############################
@@ -45,23 +45,46 @@ router.get('/configure', function(req, res, next) {
 // #################### CONTROLLER MAPPING #####################
 router.get('/report/daily/test', dailyReportController.test);
 
-// #################### SYSTEM #################################
+// #################### WEBHOOKS #################################
 /* POST Zoom Webhook Event Handler */
 router.post('/webhooks/:evt', function(req, res, next) {
-    // TODO Use this with a Controller to handle all incoming requests???
-    // TODO Only accept POST requests to these URLs???
-    // TODO Verify the request source is Zoom using the Verification Token
-    if('deauthorization' === req.param.evt) {
-        console.log('Deauthorization event received...');
-        console.log(req.body);
-        // TODO Invalidate request using Verification Token
-        // TODO Handle deauthorization event
-    } else {
-        console.log('New Webhook event received...');
-        console.log(req.body);
+    console.log('New Webhook Event');
+    let error = false;
+    if(`POST` !== req.method) {
+        console.log('Webhooks must use HTTP POST verb for method');
+        error = true;
+        res.status(405).end();
+    }
+    if(!process.env.WEBHOOK_VERIFICATION_TOKEN) {
+        console.error('Environment variable is NOT set for Webhook Verification Token');
+        error = true;
+        res.status(500).end();
+    }
+    if(process.env.WEBHOOK_VERIFICATION_TOKEN !== req.headers.authorization) {
+        console.error('Webhook Verification Token does not match the request Authorization header as expected');
+        error = true;
+        res.status(417).end();
+    }
+    if(!req.body || !req.body[`event`] || !req.body[`payload`]) {
+        console.error('Missing the body, or one of the required properties of the body');
+        error = true;
+        res.status(400).end();
     }
 
-    res.send(200, 'Event received');
+    // TODO Map req.param.evt to the controller methods
+    if(false === error) {
+        console.log('SHOULD BE PROCESSING WEBHOOK... \n\n');
+        if('deauthorization' === req.params.evt) {
+            console.log('Deauthorization event received...');
+            console.log(req.body);
+            webhookController.deauthorization(req, res);
+        } else {
+            console.log('New Webhook event received...');
+            console.log(req.body);
+            webhookController.generic(req, res);
+        }
+    }
+    // NOTE Later, can move above code into the controller and direct to correct handlers by req.body.type (type of event)
 });
 
 module.exports = router;

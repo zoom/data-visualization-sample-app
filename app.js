@@ -1,9 +1,9 @@
 "use strict";
 
 // Setup local development environment variables
-if('production' !== process.env.NODE_ENV) {
+//if('production' !== process.env.NODE_ENV) {
     require('dotenv').config();
-}
+//}
 
 // DEPS
 const mongoose = require('mongoose');
@@ -67,6 +67,10 @@ const zMiddleware = new ZoomMiddleware({
 app.use('/oauth', zMiddleware, oauthRouter);
 app.use('/users', zMiddleware, usersRouter);
 app.use('/zoom', zMiddleware, zoomRouter);
+app.use('/events', zMiddleware, (req, res, next) => {
+    console.log(`Zoom Events, respond success and end.`);
+    res.status(200).end();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

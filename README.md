@@ -1,12 +1,12 @@
 # Zoom - Data Visualization Sample App
 
+**NOTE** This is a WIP and ONLY for Development Testing Purposes
+
 This is a sample application demonstrating the basics of developing an app for the Zoom Marketplace showing:
 
 * OAuth2 Authorization Flow
 * OAuth2 Refresh Flow
-* Webhook Event Handling
-* Zoom API Data retrieval into persistent storage
-* Simple Zoom API data visualizations of your Zoom Account Activity
+* Zoom API Data retrieval
 
 ## Scenario / User Story
 
@@ -16,10 +16,6 @@ As a developer, I have been tasked by my manager to build an integration with Zo
 * # of Meetings
 * # of Webinars
 * # of Zoom Rooms
-* User Activity Information
-* Meeting Activity Information
-* Webinar Activity Information
-* Zoom Room Activity Information
 
 ## Prerequisites
 
