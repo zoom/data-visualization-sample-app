@@ -19,11 +19,24 @@ As a developer, I have been tasked by my manager to build an integration with Zo
 
 ## Prerequisites
 
-TBD...
+* Need a Zoom Account (preferably a Developer Account created from [Zoom Marketplace](https://marketplace.zoom.us)).
+* Node installed locally (test by running `node -v`)
+* MongoDB installed locally (test by running `mongo`)
+* NPM installed locally if not already bundled with node (you can tell if you have this by running `npm -v`
+* Git installed locally (test by running `git --version`)
 
-## How to Use This App
+## How to Use This App Locally
 
-TBD...
+1. Clone the repository `git clone https://github.com/zoom/data-visualization-sample-app`
+2. Change CWD to the root of the new repository just cloned `cd data-visualization-sample-app`
+3. Install dependencies `npm install`
+4. Change the name of the environment variable template `mv env.tmpl .env`
+5. Edit the `.env` file and replace all property values with your values from Zoom Marketplace for your app
+6. Save/Close the `.env` file
+7. Start the ngrok (see below)
+8. Start your app `npm start`
+9. Use the Marketplace to test: Local Test (for Development API Keys), Publishable URL (for Production API Keys)
+10. Open the Zoom Client (logged in as the user who installed the app) and start a meeting, then end it. You should see webhook event data coming through
 
 ### Locally with ngrok
 
