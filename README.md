@@ -24,6 +24,7 @@ As a developer, I have been tasked by my manager to build an integration with Zo
 * [MongoDB installed locally](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/) (test by running `mongo`)
 * NPM installed locally if not already bundled with node (you can tell if you have this by running `npm -v`
 * Git installed locally (test by running `git --version`)
+* [ngrok](https://ngrok.com/) account (sign up for a free account [here](https://dashboard.ngrok.com/user/signup)) and [installed locally](https://ngrok.com/download)
 
 ## How to Use This App Locally
 
@@ -63,14 +64,6 @@ tunnels:
 7. Authorize the app, and you should arrive at the configuration view, and can view the command line logs to see your new access and refresh tokens
 8. Start customizing the code to try new things of your own!
 
-### On Heroku
-
-TBD...
-
-## Heroku Add-Ons
-
-* Heroku-Config
-
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the Zoom Developer Code of Conduct, the different ways you can contribute, and the process for submitting pull requests to us.
@@ -89,6 +82,7 @@ Please see the [LICENSE](LICENSE) file for complete license details.
 * dotenv
 * Express.js
 * MongoDB
+* ngrok
 
 ## Support
 For any questions or issues, please visit our new Community Support Forum at https://devforum.zoom.us/
