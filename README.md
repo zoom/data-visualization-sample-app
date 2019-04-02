@@ -21,7 +21,7 @@ As a developer, I have been tasked by my manager to build an integration with Zo
 
 * Need a Zoom Account (preferably a Developer Account created from [Zoom Marketplace](https://marketplace.zoom.us)).
 * Node installed locally (test by running `node -v`)
-* MongoDB installed locally (test by running `mongo`)
+* [MongoDB installed locally](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/) (test by running `mongo`)
 * NPM installed locally if not already bundled with node (you can tell if you have this by running `npm -v`
 * Git installed locally (test by running `git --version`)
 
