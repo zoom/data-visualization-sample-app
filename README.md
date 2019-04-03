@@ -30,7 +30,7 @@ As a developer, I have been tasked by my manager to build an integration with Zo
 
 1. Clone the repository `git clone https://github.com/zoom/data-visualization-sample-app`
 2. Change CWD to the root of the new repository just cloned `cd data-visualization-sample-app`
-3. Install dependencies `npm install`
+3. Install dependencies `npm install` (if you have not already)
 4. Change the name of the environment variable template `mv env.tmpl .env`
 5. Edit the `.env` file and replace all property values with your values from Zoom Marketplace for your app
 6. Save/Close the `.env` file
