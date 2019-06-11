@@ -1,11 +1,5 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue before making a change:
-
-* [File a New Bug/Issue](https://github.com/zoom/data-visualization-sample-app/issues/new?template=bug_report.md)
-* [Suggest a New Feature/Improvement](https://github.com/zoom/data-visualization-sample-app/issues/new?template=feature_request.md)
-* [General Inquiry](https://github.com/zoom/data-visualization-sample-app/issues/new?template=general-inquiries.md)
-
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
 ## Pull Request Process
@@ -68,7 +62,7 @@ further defined and clarified by project maintainers.
 ### Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at [dev-support@weebly.com]. All
+reported by contacting the project team at [developersupport@zoom.us](mailto:developersupport@zoom.us). All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.
