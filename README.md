@@ -5,26 +5,18 @@
 This is a sample application demonstrating the basics of developing an app for the Zoom Marketplace showing:
 
 * OAuth2 Authorization Flow
-* OAuth2 Refresh Flow
-* Zoom API Data retrieval
-
-## Scenario / User Story
-
-As a developer, I have been tasked by my manager to build an integration with Zoom. I am to build a simple app that pulls data from my company’s Zoom account into persistent storage, and which presents data visualizations (using Grafana or d3.js) about our Zoom account:
-
-* # of Users
-* # of Meetings
-* # of Webinars
-* # of Zoom Rooms
+* Zoom Webhook Event Handling
+* OAuth2 Token Refresh Flow **TODO**
+* Zoom API Data retrieval **STUB**
 
 ## Prerequisites
 
 * Need a Zoom Account (preferably a Developer Account created from [Zoom Marketplace](https://marketplace.zoom.us)).
-* Node installed locally (test by running `node -v`)
+* [Node.js](https://nodejs.org) installed locally (test by running `node -v`)
 * [MongoDB installed locally](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/) (test by running `mongo`)
-* NPM installed locally if not already bundled with node (you can tell if you have this by running `npm -v`
-* Git installed locally (test by running `git --version`)
-* [ngrok](https://ngrok.com/) account (sign up for a free account [here](https://dashboard.ngrok.com/user/signup)) and [installed locally](https://ngrok.com/download)
+* NPM installed locally, comes with Node.js installation (you can tell if you have this by running `npm -v`)
+* Git installed locally (test by running this command in the terminal `git --version`)
+* [ngrok](https://ngrok.com/) account and installed locally (sign up for a free account [here](https://dashboard.ngrok.com/user/signup)) and [installed locally](https://ngrok.com/download)
 
 ## How to Use This App Locally
 
