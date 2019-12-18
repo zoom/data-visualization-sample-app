@@ -67,10 +67,12 @@ const zMiddleware = new ZoomMiddleware({
 app.use('/oauth', zMiddleware, oauthRouter);
 app.use('/users', zMiddleware, usersRouter);
 app.use('/zoom', zMiddleware, zoomRouter);
+/********* GENERIC EVENTS HANDLER, NOT IN USE CURRENTLY, SEE controllers/webhooks.controller.js
 app.use('/events', zMiddleware, (req, res, next) => {
     console.log(`Zoom Events, respond success and end.`);
     res.status(200).end();
 });
+*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

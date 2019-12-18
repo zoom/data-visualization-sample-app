@@ -169,6 +169,7 @@ const revokeToken = (token, cb) => {
  */
 router.get('/phase-one', function(req, res) {
     console.log(`\nPhase one of redirect has been initiated\n`);
+    console.log(req);
 
     const zoomAuthBaseURL = getZoomAuthBase();
     const zoomAuthorizeURL = `${zoomAuthBaseURL}/oauth/authorize`;
@@ -207,6 +208,7 @@ router.get('/phase-one', function(req, res) {
  */
 router.get('/phase-two', function(req, res, next) {
     console.log(`\nPhase two of redirect has been initiated\n`);
+    //console.log(req);
 
     // Make certain we are receiving requests from valid sources
     if(!req.query.state || req.query.state !== process.env.AUTH_STATE) {
@@ -258,34 +260,19 @@ router.get('/phase-two', function(req, res, next) {
             // we should have an access and refresh token. store them securely
             console.log('Token Response Body: ', body);
 
-            /* TODO This is only for demonstration purposes and SHOULD NOT be used in a production environment, these should be stored in the DB.installations
-            req.app.token = body.access_token;
-            req.app.tokenType = body.token_type;
-            req.app.refresh = body.refresh_token;
-            req.app.expiresIn = body.expires_in;
-            req.app.tokenScope = body.scope;
-            */
-
-            body.refresh_after = moment().add(59, 'minutes');
-            console.log('refresh after: ', body.refresh_after);
+            let refreshAt = body.refresh_after = moment().add(59, 'minutes');
+            console.log('refresh at: ', refreshAt);
 
             // TODO: Store in DB (only should hit this if we're installing the app)
+            /*********** COMMENTED OUT FOR NOW, YOU CAN USE THIS WITH MONGODB
             let auth = new Auth(body);
             auth.save((err) => {
                 if(err) throw err;
                 console.log(`New auth saved to DB!`);
                 // Usually, you would be creating an account here or authenticating this user exists in your system.
                 // Since this app is meant to run 1:1, then it isn't a big deal
-                res.render('configure', {
-                    appDisplayName: process.env.APP_DISPLAY_NAME,
-                    configurationOptionsByScope: [
-                        {dataId: `newUsers`, displayName: `New Users`},
-                        {dataId: `meetings`, displayName: `Meetings`},
-                        {dataId: `participants`, displayName: `Participants`},
-                        {dataId: `meetingMinutes`, displayName: `Meeting Minutes`}
-                    ]
-                });
             });
+            */
 
             // TODO DELETE THIS ONCE DEVELOPMENT IS COMPLETE
             console.log(`\nAccess token: ${body.access_token}`);
@@ -296,6 +283,16 @@ router.get('/phase-two', function(req, res, next) {
 
             console.log(`Now we are ready to access the API!!!`);
             // TODO Need to complete this or refactor it, just a placeholder for now...
+            console.log('Rendering the response');
+            res.render('configure', {
+                appDisplayName: process.env.APP_DISPLAY_NAME,
+                configurationOptionsByScope: [
+                    {dataId: `newUsers`, displayName: `New Users`},
+                    {dataId: `meetings`, displayName: `Meetings`},
+                    {dataId: `participants`, displayName: `Participants`},
+                    {dataId: `meetingMinutes`, displayName: `Meeting Minutes`}
+                ]
+            });
         }
     });
 });

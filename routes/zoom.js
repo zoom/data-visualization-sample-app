@@ -47,9 +47,16 @@ router.get('/report/daily/test', dailyReportController.test);
 
 // #################### WEBHOOKS #################################
 /* POST Zoom Webhook Event Handler */
-router.post('/webhooks/:evt', function(req, res, next) {
+router.post('/webhooks', function(req, res, next) {
+/* CURRENT ERRORS...
+New Webhook Event
+Logging new webhook event...
+POST /zoom/webhooks 500 15.204 ms - 2180
+*/
     console.log('New Webhook Event');
+    
     let error = false;
+    // MAY NOT NEED THIS, NEED TO SEE IF EXPRESS.JS BLOCKS ALL OTHER METHOD CALLS TO THIS ROUTE
     if(`POST` !== req.method) {
         console.log('Webhooks must use HTTP POST verb for method');
         error = true;
@@ -66,20 +73,20 @@ router.post('/webhooks/:evt', function(req, res, next) {
         res.status(417).end();
     }
     if(!req.body || !req.body[`event`] || !req.body[`payload`]) {
-        console.error('Missing the body, or one of the required properties of the body');
+        console.error('Invalid payload, missing required `body`, or one of its required properties');
         error = true;
         res.status(400).end();
     }
 
     // TODO Map req.param.evt to the controller methods
     if(false === error) {
-        console.log('SHOULD BE PROCESSING WEBHOOK... \n\n');
+        console.log('PASSED BASIC TESTS, PROCESSING WEBHOOK... \n');
         if('deauthorization' === req.params.evt) {
             console.log('Deauthorization event received...');
             console.log(req.body);
             webhookController.deauthorization(req, res);
         } else {
-            console.log('New Webhook event received...');
+            console.log('New Event received...');
             console.log(req.body);
             webhookController.generic(req, res);
         }
