@@ -7,7 +7,7 @@ This is a sample application demonstrating the basics of developing an app for t
 * OAuth2 Authorization Flow
 * Zoom Webhook Event Handling
 * OAuth2 Token Refresh Flow **TODO**
-* Zoom API Data retrieval **STUB**
+* Zoom API Data retrieval **TODO**
 
 ## Prerequisites
 
@@ -24,7 +24,7 @@ This is a sample application demonstrating the basics of developing an app for t
 2. Change CWD to the root of the new repository just cloned `cd data-visualization-sample-app`
 3. Install dependencies `npm install` (if you have not already)
 4. Change the name of the environment variable template `mv env.tmpl .env`
-5. Edit the `.env` file and replace all property values with your values from Zoom Marketplace for your app
+5. Edit the `.env` file and replace all property values with your values from Zoom Marketplace for your app. Set deauthorization url, event subscription urls, and any other webhook subscription url to: `{YOUR_NGROK_DOMAIN}/zoom/webhooks` all events sent to that location will be logged
 6. Save/Close the `.env` file
 7. Start the ngrok (see below)
 8. Start your app `npm start`
