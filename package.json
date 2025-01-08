@@ -39,6 +39,9 @@
     "querystring": "^0.2.0",
     "request": "^2.88.0"
   },
+  "overrides": {
+    "tough-cookie": "^5.0.0"
+  },
   "engines": {
     "node": "10.9.x"
   }
